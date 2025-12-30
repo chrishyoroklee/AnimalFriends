@@ -47,10 +47,19 @@ struct BearProvider: TimelineProvider {
 
 struct Animal_WidgetsWidgetEntryView: View {
     let entry: BearProvider.Entry
+    @Environment(\.widgetFamily) private var family
 
     var body: some View {
-        BearWidgetView(bodyColor: entry.bodyColor, shirt: entry.shirt, pants: entry.pants)
-            .widgetURL(URL(string: "animalwidgets://edit"))
+        Group {
+            switch family {
+            case .accessoryRectangular:
+                BearLockScreenView(bodyColor: entry.bodyColor, shirt: entry.shirt, pants: entry.pants)
+            default:
+                BearWidgetView(bodyColor: entry.bodyColor, shirt: entry.shirt, pants: entry.pants)
+            }
+        }
+        .widgetURL(URL(string: "animalwidgets://edit"))
+        .containerBackground(.fill.tertiary, for: .widget)
     }
 }
 
@@ -63,7 +72,42 @@ struct Animal_WidgetsWidget: Widget {
         }
         .configurationDisplayName("Bear Widget")
         .description("Pick a bear outfit and show it on your home screen.")
-        .supportedFamilies([.systemMedium])
+        .supportedFamilies([.systemMedium, .accessoryRectangular])
+    }
+}
+
+private struct BearLockScreenView: View {
+    let bodyColor: BearBodyColor
+    let shirt: BearShirt
+    let pants: BearPants
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Circle()
+                .fill(bodyColor.color)
+                .frame(width: 36, height: 36)
+                .overlay(
+                    HStack(spacing: 6) {
+                        Circle().fill(Color.black.opacity(0.75)).frame(width: 4, height: 4)
+                        Circle().fill(Color.black.opacity(0.75)).frame(width: 4, height: 4)
+                    }
+                    .offset(y: -2)
+                )
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Bear Outfit")
+                    .font(.caption.weight(.semibold))
+                HStack(spacing: 6) {
+                    RoundedRectangle(cornerRadius: 3, style: .continuous)
+                        .fill(shirt.color)
+                        .frame(width: 18, height: 10)
+                    RoundedRectangle(cornerRadius: 3, style: .continuous)
+                        .fill(pants.color)
+                        .frame(width: 18, height: 10)
+                }
+            }
+        }
+        .padding(.horizontal, 6)
     }
 }
 

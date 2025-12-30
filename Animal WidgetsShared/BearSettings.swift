@@ -73,7 +73,7 @@ enum BearPants: String, CaseIterable, Identifiable {
 }
 
 struct BearSettings {
-    static let appGroupID = "group.animalwidgets"
+    static let appGroupID = "group.com.hyoroklee.animalfriends"
 
     static let bodyKey = "bear.bodyColor"
     static let shirtKey = "bear.shirt"
