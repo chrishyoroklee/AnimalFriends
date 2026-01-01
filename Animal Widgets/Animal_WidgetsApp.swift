@@ -14,7 +14,7 @@ struct Animal_WidgetsApp: App {
             TabView {
                 ContentView()
                     .tabItem {
-                        Label("Home", systemImage: "house.fill")
+                        Label("Animals", systemImage: "dog.fill")
                     }
 
                 StoreView()
