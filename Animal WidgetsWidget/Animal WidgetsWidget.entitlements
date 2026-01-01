@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.animalwidgets</string>
+		<string>group.com.hyoroklee.animalfriends</string>
 	</array>
 </dict>
 </plist>

@@ -52,14 +52,14 @@ struct BearEditorView: View {
                         }
                     }
                 }
-                .onChange(of: bodyColorRaw) { _ in
-                    WidgetCenter.shared.reloadAllTimelines()
+                .onChange(of: bodyColorRaw) {
+                    WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
                 }
-                .onChange(of: shirtRaw) { _ in
-                    WidgetCenter.shared.reloadAllTimelines()
+                .onChange(of: shirtRaw) {
+                    WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
                 }
-                .onChange(of: pantsRaw) { _ in
-                    WidgetCenter.shared.reloadAllTimelines()
+                .onChange(of: pantsRaw) {
+                    WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
                 }
             }
             .padding()
