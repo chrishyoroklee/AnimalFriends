@@ -79,7 +79,8 @@ struct ContentView: View {
                                 BearWidgetView(
                                     bodyColor: character.bodyColor,
                                     shirt: character.shirt,
-                                    pants: character.pants
+                                    pants: character.pants,
+                                    head: character.head
                                 )
                                 .frame(maxWidth: 320)
                             }

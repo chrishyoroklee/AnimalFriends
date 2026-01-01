@@ -74,6 +74,18 @@ enum BearPants: String, CaseIterable, Identifiable {
     }
 }
 
+enum AnimalHead: String, CaseIterable, Identifiable, Codable {
+    case bear
+    case cat
+    case dog
+
+    var id: String { rawValue }
+
+    var label: String {
+        rawValue.capitalized
+    }
+}
+
 struct BearSettings {
     static let appGroupID = "group.com.hyoroklee.animalfriends"
 

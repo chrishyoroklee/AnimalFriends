@@ -28,6 +28,10 @@ struct EditorView: View {
         BearPants(rawValue: character.pantsRaw) ?? .jeans
     }
 
+    private var head: AnimalHead {
+        AnimalHead(rawValue: character.headRaw) ?? .bear
+    }
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 16) {
@@ -92,13 +96,15 @@ struct EditorView: View {
                     .buttonStyle(.plain)
 
                     ZStack {
-                        BearWidgetView(bodyColor: bodyColor, shirt: shirt, pants: pants)
+                        BearWidgetView(bodyColor: bodyColor, shirt: shirt, pants: pants, head: head)
                         EditorHitTargets { selection in
                             switch selection {
                             case .shirt:
                                 activeSheet = .shirt
                             case .pants:
                                 activeSheet = .pants
+                            case .head:
+                                activeSheet = .head
                             }
                         }
                     }
@@ -118,6 +124,9 @@ struct EditorView: View {
                 WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
             }
             .onChange(of: character.name) {
+                WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
+            }
+            .onChange(of: character.headRaw) {
                 WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
             }
             .padding()
@@ -165,6 +174,12 @@ struct EditorView: View {
                                     Text(item.label).tag(item.rawValue)
                                 }
                             }
+                        case .head:
+                            Picker("Head", selection: $character.headRaw) {
+                                ForEach(AnimalHead.allCases) { item in
+                                    Text(item.label).tag(item.rawValue)
+                                }
+                            }
                         }
                     }
                     .navigationTitle(sheet.title)
@@ -181,12 +196,14 @@ struct EditorView: View {
 }
 
 private enum EditorSheet: String, Identifiable {
+    case head
     case shirt
     case pants
 
     var id: String { rawValue }
     var title: String {
         switch self {
+        case .head: return "Head"
         case .shirt: return "Shirt"
         case .pants: return "Pants"
         }
@@ -195,6 +212,7 @@ private enum EditorSheet: String, Identifiable {
 
 private struct EditorHitTargets: View {
     enum Selection {
+        case head
         case shirt
         case pants
     }
@@ -216,6 +234,12 @@ private struct EditorHitTargets: View {
                 width: size.width * 0.40,
                 height: size.height * 0.20
             )
+            let headRect = CGRect(
+                x: size.width * 0.38,
+                y: size.height * 0.10,
+                width: size.width * 0.24,
+                height: size.height * 0.22
+            )
 
             Color.clear
                 .contentShape(Rectangle())
@@ -231,6 +255,12 @@ private struct EditorHitTargets: View {
             }
             .frame(width: pantsRect.width, height: pantsRect.height)
             .position(x: pantsRect.midX, y: pantsRect.midY)
+
+            Button(action: { onSelect(.head) }) {
+                Color.clear
+            }
+            .frame(width: headRect.width, height: headRect.height)
+            .position(x: headRect.midX, y: headRect.midY)
         }
     }
 }

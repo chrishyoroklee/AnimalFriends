@@ -30,8 +30,8 @@ struct WidgetPreview: View {
     }
 
     var body: some View {
-        BearWidgetView(bodyColor: bodyColor, shirt: shirt, pants: pants)
-            .frame(maxWidth: 320)
+    BearWidgetView(bodyColor: bodyColor, shirt: shirt, pants: pants, head: .bear)
+        .frame(maxWidth: 320)
     }
 }
 

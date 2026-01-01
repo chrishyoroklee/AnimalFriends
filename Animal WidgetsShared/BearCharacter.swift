@@ -10,9 +10,45 @@ import SwiftUI
 struct BearCharacter: Identifiable, Codable, Equatable {
     let id: UUID
     var name: String
+    var headRaw: String
     var bodyColorRaw: String
     var shirtRaw: String
     var pantsRaw: String
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case headRaw
+        case bodyColorRaw
+        case shirtRaw
+        case pantsRaw
+    }
+
+    init(
+        id: UUID,
+        name: String,
+        headRaw: String,
+        bodyColorRaw: String,
+        shirtRaw: String,
+        pantsRaw: String
+    ) {
+        self.id = id
+        self.name = name
+        self.headRaw = headRaw
+        self.bodyColorRaw = bodyColorRaw
+        self.shirtRaw = shirtRaw
+        self.pantsRaw = pantsRaw
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        name = try container.decodeIfPresent(String.self, forKey: .name) ?? "Pooh"
+        headRaw = try container.decodeIfPresent(String.self, forKey: .headRaw) ?? AnimalHead.bear.rawValue
+        bodyColorRaw = try container.decodeIfPresent(String.self, forKey: .bodyColorRaw) ?? BearBodyColor.caramel.rawValue
+        shirtRaw = try container.decodeIfPresent(String.self, forKey: .shirtRaw) ?? BearShirt.hoodie.rawValue
+        pantsRaw = try container.decodeIfPresent(String.self, forKey: .pantsRaw) ?? BearPants.jeans.rawValue
+    }
 
     var bodyColor: BearBodyColor {
         BearBodyColor(rawValue: bodyColorRaw) ?? .caramel
@@ -26,10 +62,15 @@ struct BearCharacter: Identifiable, Codable, Equatable {
         BearPants(rawValue: pantsRaw) ?? .jeans
     }
 
+    var head: AnimalHead {
+        AnimalHead(rawValue: headRaw) ?? .bear
+    }
+
     static func `default`(name: String = "Pooh") -> BearCharacter {
         BearCharacter(
             id: UUID(),
             name: name,
+            headRaw: AnimalHead.bear.rawValue,
             bodyColorRaw: BearBodyColor.caramel.rawValue,
             shirtRaw: BearShirt.hoodie.rawValue,
             pantsRaw: BearPants.jeans.rawValue
@@ -59,6 +100,7 @@ enum BearCharacterStore {
         let legacy = BearCharacter(
             id: UUID(),
             name: legacyName,
+            headRaw: AnimalHead.bear.rawValue,
             bodyColorRaw: legacyBody,
             shirtRaw: legacyShirt,
             pantsRaw: legacyPants

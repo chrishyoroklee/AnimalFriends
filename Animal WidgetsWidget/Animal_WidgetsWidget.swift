@@ -15,6 +15,7 @@ struct BearEntry: TimelineEntry {
     let pants: BearPants
     let name: String
     let characterId: UUID
+    let head: AnimalHead
 }
 
 struct BearProvider: TimelineProvider {
@@ -25,7 +26,8 @@ struct BearProvider: TimelineProvider {
             shirt: .hoodie,
             pants: .jeans,
             name: "Pooh",
-            characterId: UUID()
+            characterId: UUID(),
+            head: .bear
         )
     }
 
@@ -51,7 +53,8 @@ struct BearProvider: TimelineProvider {
             shirt: active.shirt,
             pants: active.pants,
             name: active.name.isEmpty ? "Pooh" : active.name,
-            characterId: active.id
+            characterId: active.id,
+            head: active.head
         )
     }
 }
@@ -68,10 +71,17 @@ struct Animal_WidgetsWidgetEntryView: View {
                     bodyColor: entry.bodyColor,
                     shirt: entry.shirt,
                     pants: entry.pants,
-                    name: entry.name
+                    name: entry.name,
+                    head: entry.head
                 )
             default:
-                BearWidgetView(bodyColor: entry.bodyColor, shirt: entry.shirt, pants: entry.pants, showsCard: false)
+                BearWidgetView(
+                    bodyColor: entry.bodyColor,
+                    shirt: entry.shirt,
+                    pants: entry.pants,
+                    head: entry.head,
+                    showsCard: false
+                )
             }
         }
         .widgetURL(URL(string: "animalwidgets://edit?id=\(entry.characterId.uuidString)"))
@@ -97,6 +107,7 @@ private struct BearLockScreenMiniView: View {
     let shirt: BearShirt
     let pants: BearPants
     let name: String
+    let head: AnimalHead
 
     var body: some View {
         HStack(spacing: 10) {
@@ -104,6 +115,7 @@ private struct BearLockScreenMiniView: View {
                 bodyColor: bodyColor,
                 shirt: shirt,
                 pants: pants,
+                head: head,
                 showsCard: false
             )
             .frame(width: 70, height: 70)
@@ -125,6 +137,7 @@ private struct BearLockScreenMiniView: View {
         shirt: .hoodie,
         pants: .jeans,
         name: "Pooh",
-        characterId: UUID()
+        characterId: UUID(),
+        head: .bear
     )
 }
