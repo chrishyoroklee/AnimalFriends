@@ -11,6 +11,7 @@ enum BearBodyColor: String, CaseIterable, Identifiable {
     case caramel
     case cocoa
     case espresso
+    case mist
 
     var id: String { rawValue }
 
@@ -19,6 +20,7 @@ enum BearBodyColor: String, CaseIterable, Identifiable {
         case .caramel: return Color(red: 0.80, green: 0.63, blue: 0.42)
         case .cocoa: return Color(red: 0.62, green: 0.45, blue: 0.30)
         case .espresso: return Color(red: 0.39, green: 0.28, blue: 0.19)
+        case .mist: return Color(red: 0.88, green: 0.88, blue: 0.88)
         }
     }
 

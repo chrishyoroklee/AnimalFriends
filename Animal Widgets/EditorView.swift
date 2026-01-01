@@ -14,6 +14,7 @@ struct EditorView: View {
     @Binding var character: BearCharacter
     @State private var showingRename = false
     @State private var renameText = ""
+    @State private var activeSheet: EditorSheet?
 
     private var bodyColor: BearBodyColor {
         BearBodyColor(rawValue: character.bodyColorRaw) ?? .caramel
@@ -29,41 +30,65 @@ struct EditorView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
-                BearWidgetView(bodyColor: bodyColor, shirt: shirt, pants: pants)
-                    .frame(maxWidth: 400)
-
-                Form {
-                    Picker("Body Color", selection: $character.bodyColorRaw) {
+            VStack(spacing: 16) {
+                VStack(spacing: 10) {
+                    Menu {
                         ForEach(BearBodyColor.allCases) { color in
-                            Text(color.label).tag(color.rawValue)
+                            Button {
+                                character.bodyColorRaw = color.rawValue
+                            } label: {
+                                HStack(spacing: 10) {
+                                    Text(color.label)
+                                    Spacer()
+                                    RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                        .fill(color.color)
+                                        .frame(width: 28, height: 16)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                                .stroke(Color.black.opacity(0.15), lineWidth: 1)
+                                        )
+                                }
+                            }
                         }
+                    } label: {
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(bodyColor.color)
+                            .frame(width: 46, height: 18)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                    .stroke(Color.black.opacity(0.12), lineWidth: 1)
+                            )
                     }
+                    .buttonStyle(.plain)
 
-                    Picker("Shirt", selection: $character.shirtRaw) {
-                        ForEach(BearShirt.allCases) { item in
-                            Text(item.label).tag(item.rawValue)
+                    ZStack {
+                        BearWidgetView(bodyColor: bodyColor, shirt: shirt, pants: pants)
+                        EditorHitTargets { selection in
+                            switch selection {
+                            case .shirt:
+                                activeSheet = .shirt
+                            case .pants:
+                                activeSheet = .pants
+                            }
                         }
                     }
+                    .frame(maxWidth: 360)
+                    .frame(maxWidth: .infinity)
+                }
 
-                    Picker("Pants", selection: $character.pantsRaw) {
-                        ForEach(BearPants.allCases) { item in
-                            Text(item.label).tag(item.rawValue)
-                        }
-                    }
-                }
-                .onChange(of: character.bodyColorRaw) {
-                    WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
-                }
-                .onChange(of: character.shirtRaw) {
-                    WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
-                }
-                .onChange(of: character.pantsRaw) {
-                    WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
-                }
-                .onChange(of: character.name) {
-                    WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
-                }
+                Spacer(minLength: 12)
+            }
+            .onChange(of: character.bodyColorRaw) {
+                WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
+            }
+            .onChange(of: character.shirtRaw) {
+                WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
+            }
+            .onChange(of: character.pantsRaw) {
+                WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
+            }
+            .onChange(of: character.name) {
+                WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
             }
             .padding()
             .navigationTitle(character.name.isEmpty ? "Pooh" : character.name)
@@ -94,6 +119,88 @@ struct EditorView: View {
             } message: {
                 Text("Hold the title to rename.")
             }
+            .sheet(item: $activeSheet) { sheet in
+                NavigationStack {
+                    Form {
+                        switch sheet {
+                        case .shirt:
+                            Picker("Shirt", selection: $character.shirtRaw) {
+                                ForEach(BearShirt.allCases) { item in
+                                    Text(item.label).tag(item.rawValue)
+                                }
+                            }
+                        case .pants:
+                            Picker("Pants", selection: $character.pantsRaw) {
+                                ForEach(BearPants.allCases) { item in
+                                    Text(item.label).tag(item.rawValue)
+                                }
+                            }
+                        }
+                    }
+                    .navigationTitle(sheet.title)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("Done") { activeSheet = nil }
+                        }
+                    }
+                }
+                .presentationDetents([.height(240)])
+            }
+        }
+    }
+}
+
+private enum EditorSheet: String, Identifiable {
+    case shirt
+    case pants
+
+    var id: String { rawValue }
+    var title: String {
+        switch self {
+        case .shirt: return "Shirt"
+        case .pants: return "Pants"
+        }
+    }
+}
+
+private struct EditorHitTargets: View {
+    enum Selection {
+        case shirt
+        case pants
+    }
+
+    var onSelect: (Selection) -> Void
+
+    var body: some View {
+        GeometryReader { proxy in
+            let size = proxy.size
+            let shirtRect = CGRect(
+                x: size.width * 0.27,
+                y: size.height * 0.38,
+                width: size.width * 0.46,
+                height: size.height * 0.22
+            )
+            let pantsRect = CGRect(
+                x: size.width * 0.30,
+                y: size.height * 0.60,
+                width: size.width * 0.40,
+                height: size.height * 0.20
+            )
+
+            Color.clear
+                .contentShape(Rectangle())
+
+            Button(action: { onSelect(.shirt) }) {
+                Color.clear
+            }
+            .frame(width: shirtRect.width, height: shirtRect.height)
+            .position(x: shirtRect.midX, y: shirtRect.midY)
+
+            Button(action: { onSelect(.pants) }) {
+                Color.clear
+            }
+            .frame(width: pantsRect.width, height: pantsRect.height)
+            .position(x: pantsRect.midX, y: pantsRect.midY)
         }
     }
 }
