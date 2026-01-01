@@ -40,6 +40,8 @@ struct ContentView: View {
     @State private var isCreating = false
     @State private var showingDeleteConfirm = false
     @State private var pendingDeleteOffsets: IndexSet = []
+    @State private var showingShareSheet = false
+    @State private var pendingShareName = ""
 
     var body: some View {
         NavigationStack {
@@ -61,6 +63,16 @@ struct ContentView: View {
                                     Text(character.name.isEmpty ? "Pooh" : character.name)
                                         .font(.headline)
                                     Spacer()
+                                    Menu {
+                                        Button("Share with a friend") {
+                                            pendingShareName = character.name.isEmpty ? "Pooh" : character.name
+                                            showingShareSheet = true
+                                        }
+                                    } label: {
+                                        Image(systemName: "ellipsis")
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    .buttonStyle(.plain)
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -188,6 +200,11 @@ struct ContentView: View {
             }
         } message: {
             Text("This will remove the character and its outfit.")
+        }
+        .alert("Share with a friend", isPresented: $showingShareSheet) {
+            Button("OK") { }
+        } message: {
+            Text("Sharing for \(pendingShareName) is coming soon.")
         }
     }
 
