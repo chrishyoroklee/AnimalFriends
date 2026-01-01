@@ -14,11 +14,19 @@ struct BearEntry: TimelineEntry {
     let shirt: BearShirt
     let pants: BearPants
     let name: String
+    let characterId: UUID
 }
 
 struct BearProvider: TimelineProvider {
     func placeholder(in context: Context) -> BearEntry {
-        BearEntry(date: .now, bodyColor: .caramel, shirt: .hoodie, pants: .jeans, name: "Pooh")
+        BearEntry(
+            date: .now,
+            bodyColor: .caramel,
+            shirt: .hoodie,
+            pants: .jeans,
+            name: "Pooh",
+            characterId: UUID()
+        )
     }
 
     func getSnapshot(in context: Context, completion: @escaping (BearEntry) -> Void) {
@@ -42,7 +50,8 @@ struct BearProvider: TimelineProvider {
             bodyColor: active.bodyColor,
             shirt: active.shirt,
             pants: active.pants,
-            name: active.name.isEmpty ? "Pooh" : active.name
+            name: active.name.isEmpty ? "Pooh" : active.name,
+            characterId: active.id
         )
     }
 }
@@ -65,7 +74,7 @@ struct Animal_WidgetsWidgetEntryView: View {
                 BearWidgetView(bodyColor: entry.bodyColor, shirt: entry.shirt, pants: entry.pants, showsCard: false)
             }
         }
-        .widgetURL(URL(string: "animalwidgets://edit"))
+        .widgetURL(URL(string: "animalwidgets://edit?id=\(entry.characterId.uuidString)"))
         .containerBackground(.fill.tertiary, for: .widget)
     }
 }
@@ -122,5 +131,12 @@ private struct BearLockScreenView: View {
 #Preview(as: .systemMedium) {
     Animal_WidgetsWidget()
 } timeline: {
-    BearEntry(date: .now, bodyColor: .caramel, shirt: .hoodie, pants: .jeans, name: "Pooh")
+    BearEntry(
+        date: .now,
+        bodyColor: .caramel,
+        shirt: .hoodie,
+        pants: .jeans,
+        name: "Pooh",
+        characterId: UUID()
+    )
 }

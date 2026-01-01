@@ -164,7 +164,15 @@ struct ContentView: View {
         }
         .onOpenURL { url in
             if url.scheme == "animalwidgets" {
-                if let activeId = model.activeId {
+                let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+                let idParam = components?.queryItems?.first(where: { $0.name == "id" })?.value
+                let parsedId = idParam.flatMap(UUID.init)
+
+                if let parsedId {
+                    model.activeId = parsedId
+                    editingId = parsedId
+                    isEditing = true
+                } else if let activeId = model.activeId {
                     editingId = activeId
                     isEditing = true
                 }
