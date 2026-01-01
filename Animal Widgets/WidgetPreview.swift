@@ -1,5 +1,5 @@
 //
-//  BearWidgetPreview.swift
+//  WidgetPreview.swift
 //  Animal Widgets
 //
 //  Created by Codex.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BearWidgetPreview: View {
+struct WidgetPreview: View {
     @AppStorage(BearSettings.bodyKey, store: BearSettings.defaults())
     private var bodyColorRaw = BearBodyColor.caramel.rawValue
 
@@ -36,6 +36,6 @@ struct BearWidgetPreview: View {
 }
 
 #Preview {
-    BearWidgetPreview()
+    WidgetPreview()
         .padding()
 }

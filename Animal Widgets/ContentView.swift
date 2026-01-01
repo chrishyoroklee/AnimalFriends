@@ -127,7 +127,7 @@ struct ContentView: View {
         }
         .sheet(isPresented: $isEditing) {
             if let editingId, let binding = binding(for: editingId) {
-                BearEditorView(character: binding)
+                EditorView(character: binding)
             }
         }
         .sheet(isPresented: $isCreating) {

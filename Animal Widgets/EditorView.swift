@@ -1,5 +1,5 @@
 //
-//  BearEditorView.swift
+//  EditorView.swift
 //  Animal Widgets
 //
 //  Created by Codex.
@@ -8,7 +8,7 @@
 import SwiftUI
 import WidgetKit
 
-struct BearEditorView: View {
+struct EditorView: View {
     @Environment(\.dismiss) private var dismiss
 
     @Binding var character: BearCharacter
@@ -31,7 +31,7 @@ struct BearEditorView: View {
         NavigationStack {
             VStack(spacing: 20) {
                 BearWidgetView(bodyColor: bodyColor, shirt: shirt, pants: pants)
-                    .frame(maxWidth: 280)
+                    .frame(maxWidth: 400)
 
                 Form {
                     Picker("Body Color", selection: $character.bodyColorRaw) {
@@ -99,7 +99,7 @@ struct BearEditorView: View {
 }
 
 #Preview {
-    BearEditorView(
+    EditorView(
         character: .constant(BearCharacter.default(name: "Pooh"))
     )
 }
