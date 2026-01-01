@@ -78,6 +78,7 @@ struct BearSettings {
     static let bodyKey = "bear.bodyColor"
     static let shirtKey = "bear.shirt"
     static let pantsKey = "bear.pants"
+    static let nameKey = "bear.name"
 
     static func defaults() -> UserDefaults {
         UserDefaults(suiteName: appGroupID) ?? .standard

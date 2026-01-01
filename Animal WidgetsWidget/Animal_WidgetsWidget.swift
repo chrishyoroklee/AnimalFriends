@@ -13,11 +13,12 @@ struct BearEntry: TimelineEntry {
     let bodyColor: BearBodyColor
     let shirt: BearShirt
     let pants: BearPants
+    let name: String
 }
 
 struct BearProvider: TimelineProvider {
     func placeholder(in context: Context) -> BearEntry {
-        BearEntry(date: .now, bodyColor: .caramel, shirt: .hoodie, pants: .jeans)
+        BearEntry(date: .now, bodyColor: .caramel, shirt: .hoodie, pants: .jeans, name: "Pooh")
     }
 
     func getSnapshot(in context: Context, completion: @escaping (BearEntry) -> Void) {
@@ -40,7 +41,8 @@ struct BearProvider: TimelineProvider {
             date: .now,
             bodyColor: BearBodyColor(rawValue: bodyRaw) ?? .caramel,
             shirt: BearShirt(rawValue: shirtRaw) ?? .hoodie,
-            pants: BearPants(rawValue: pantsRaw) ?? .jeans
+            pants: BearPants(rawValue: pantsRaw) ?? .jeans,
+            name: defaults.string(forKey: BearSettings.nameKey) ?? "Pooh"
         )
     }
 }
@@ -53,7 +55,12 @@ struct Animal_WidgetsWidgetEntryView: View {
         Group {
             switch family {
             case .accessoryRectangular:
-                BearLockScreenView(bodyColor: entry.bodyColor, shirt: entry.shirt, pants: entry.pants)
+                BearLockScreenView(
+                    bodyColor: entry.bodyColor,
+                    shirt: entry.shirt,
+                    pants: entry.pants,
+                    name: entry.name
+                )
             default:
                 BearWidgetView(bodyColor: entry.bodyColor, shirt: entry.shirt, pants: entry.pants, showsCard: false)
             }
@@ -80,6 +87,7 @@ private struct BearLockScreenView: View {
     let bodyColor: BearBodyColor
     let shirt: BearShirt
     let pants: BearPants
+    let name: String
 
     var body: some View {
         HStack(spacing: 10) {
@@ -95,7 +103,7 @@ private struct BearLockScreenView: View {
                 )
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("Bear Outfit")
+                Text(name.isEmpty ? "Pooh" : name)
                     .font(.caption.weight(.semibold))
                 HStack(spacing: 6) {
                     RoundedRectangle(cornerRadius: 3, style: .continuous)
@@ -114,5 +122,5 @@ private struct BearLockScreenView: View {
 #Preview(as: .systemMedium) {
     Animal_WidgetsWidget()
 } timeline: {
-    BearEntry(date: .now, bodyColor: .caramel, shirt: .hoodie, pants: .jeans)
+    BearEntry(date: .now, bodyColor: .caramel, shirt: .hoodie, pants: .jeans, name: "Pooh")
 }

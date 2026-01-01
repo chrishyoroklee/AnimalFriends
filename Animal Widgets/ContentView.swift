@@ -15,6 +15,8 @@ struct ContentView: View {
     private var shirtRaw = BearShirt.hoodie.rawValue
     @AppStorage(BearSettings.pantsKey, store: BearSettings.defaults())
     private var pantsRaw = BearPants.jeans.rawValue
+    @AppStorage(BearSettings.nameKey, store: BearSettings.defaults())
+    private var bearName = "Pooh"
 
     private var bodyColor: BearBodyColor {
         BearBodyColor(rawValue: bodyColorRaw) ?? .caramel
@@ -47,7 +49,12 @@ struct ContentView: View {
         }
         .padding()
         .sheet(isPresented: $isEditing) {
-            BearEditorView(bodyColorRaw: $bodyColorRaw, shirtRaw: $shirtRaw, pantsRaw: $pantsRaw)
+            BearEditorView(
+                bodyColorRaw: $bodyColorRaw,
+                shirtRaw: $shirtRaw,
+                pantsRaw: $pantsRaw,
+                bearName: $bearName
+            )
         }
         .onOpenURL { url in
             if url.scheme == "animalwidgets" {

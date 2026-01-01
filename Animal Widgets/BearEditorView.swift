@@ -14,6 +14,7 @@ struct BearEditorView: View {
     @Binding var bodyColorRaw: String
     @Binding var shirtRaw: String
     @Binding var pantsRaw: String
+    @Binding var bearName: String
 
     private var bodyColor: BearBodyColor {
         BearBodyColor(rawValue: bodyColorRaw) ?? .caramel
@@ -34,6 +35,11 @@ struct BearEditorView: View {
                     .frame(maxWidth: 280)
 
                 Form {
+                    Section("Name") {
+                        TextField("Name", text: $bearName)
+                            .textInputAutocapitalization(.words)
+                    }
+
                     Picker("Body Color", selection: $bodyColorRaw) {
                         ForEach(BearBodyColor.allCases) { color in
                             Text(color.label).tag(color.rawValue)
@@ -61,6 +67,9 @@ struct BearEditorView: View {
                 .onChange(of: pantsRaw) {
                     WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
                 }
+                .onChange(of: bearName) {
+                    WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
+                }
             }
             .padding()
             .navigationTitle("Edit Bear")
@@ -79,6 +88,7 @@ struct BearEditorView: View {
     BearEditorView(
         bodyColorRaw: .constant(BearBodyColor.caramel.rawValue),
         shirtRaw: .constant(BearShirt.hoodie.rawValue),
-        pantsRaw: .constant(BearPants.jeans.rawValue)
+        pantsRaw: .constant(BearPants.jeans.rawValue),
+        bearName: .constant("Pooh")
     )
 }
