@@ -12,6 +12,8 @@ struct BearEditorView: View {
     @Environment(\.dismiss) private var dismiss
 
     @Binding var character: BearCharacter
+    @State private var showingRename = false
+    @State private var renameText = ""
 
     private var bodyColor: BearBodyColor {
         BearBodyColor(rawValue: character.bodyColorRaw) ?? .caramel
@@ -32,11 +34,6 @@ struct BearEditorView: View {
                     .frame(maxWidth: 280)
 
                 Form {
-                    Section("Name") {
-                        TextField("Name", text: $character.name)
-                            .textInputAutocapitalization(.words)
-                    }
-
                     Picker("Body Color", selection: $character.bodyColorRaw) {
                         ForEach(BearBodyColor.allCases) { color in
                             Text(color.label).tag(color.rawValue)
@@ -69,13 +66,33 @@ struct BearEditorView: View {
                 }
             }
             .padding()
-            .navigationTitle("Edit Bear")
+            .navigationTitle(character.name.isEmpty ? "Pooh" : character.name)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text(character.name.isEmpty ? "Pooh" : character.name)
+                        .font(.headline)
+                        .onLongPressGesture {
+                            renameText = character.name.isEmpty ? "Pooh" : character.name
+                            showingRename = true
+                        }
+                }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
                         dismiss()
                     }
                 }
+            }
+            .alert("Rename Character", isPresented: $showingRename) {
+                TextField("Name", text: $renameText)
+                    .textInputAutocapitalization(.words)
+                Button("Cancel", role: .cancel) { }
+                Button("Save") {
+                    let trimmed = renameText.trimmingCharacters(in: .whitespacesAndNewlines)
+                    character.name = trimmed.isEmpty ? "Pooh" : trimmed
+                }
+            } message: {
+                Text("Hold the title to rename.")
             }
         }
     }
