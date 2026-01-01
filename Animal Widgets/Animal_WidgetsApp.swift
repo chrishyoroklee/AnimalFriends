@@ -11,7 +11,17 @@ import SwiftUI
 struct Animal_WidgetsApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TabView {
+                ContentView()
+                    .tabItem {
+                        Label("Home", systemImage: "house.fill")
+                    }
+
+                StoreView()
+                    .tabItem {
+                        Label("Store", systemImage: "bag")
+                    }
+            }
         }
     }
 }
