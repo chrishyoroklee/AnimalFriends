@@ -21,6 +21,11 @@ struct Animal_WidgetsApp: App {
                     .tabItem {
                         Label("Store", systemImage: "bag")
                     }
+                
+                ProfileView()
+                    .tabItem {
+                        Label("Profile", systemImage: "person.fill")
+                    }
             }
         }
     }
