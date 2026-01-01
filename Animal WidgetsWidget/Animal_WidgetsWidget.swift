@@ -64,7 +64,7 @@ struct Animal_WidgetsWidgetEntryView: View {
         Group {
             switch family {
             case .accessoryRectangular:
-                BearLockScreenView(
+                BearLockScreenMiniView(
                     bodyColor: entry.bodyColor,
                     shirt: entry.shirt,
                     pants: entry.pants,
@@ -92,7 +92,7 @@ struct Animal_WidgetsWidget: Widget {
     }
 }
 
-private struct BearLockScreenView: View {
+private struct BearLockScreenMiniView: View {
     let bodyColor: BearBodyColor
     let shirt: BearShirt
     let pants: BearPants
@@ -100,31 +100,19 @@ private struct BearLockScreenView: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            Circle()
-                .fill(bodyColor.color)
-                .frame(width: 36, height: 36)
-                .overlay(
-                    HStack(spacing: 6) {
-                        Circle().fill(Color.black.opacity(0.75)).frame(width: 4, height: 4)
-                        Circle().fill(Color.black.opacity(0.75)).frame(width: 4, height: 4)
-                    }
-                    .offset(y: -2)
-                )
+            BearWidgetView(
+                bodyColor: bodyColor,
+                shirt: shirt,
+                pants: pants,
+                showsCard: false
+            )
+            .frame(width: 70, height: 70)
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text(name.isEmpty ? "Pooh" : name)
-                    .font(.caption.weight(.semibold))
-                HStack(spacing: 6) {
-                    RoundedRectangle(cornerRadius: 3, style: .continuous)
-                        .fill(shirt.color)
-                        .frame(width: 18, height: 10)
-                    RoundedRectangle(cornerRadius: 3, style: .continuous)
-                        .fill(pants.color)
-                        .frame(width: 18, height: 10)
-                }
-            }
+            Text(name.isEmpty ? "Pooh" : name)
+                .font(.caption.weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
         }
-        .padding(.horizontal, 6)
     }
 }
 
