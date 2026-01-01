@@ -46,15 +46,23 @@ struct ContentView: View {
             List {
                 Section {
                     ForEach(model.characters) { character in
+                        let isActive = character.id == model.activeId
                         Button {
                             model.activeId = character.id
                             editingId = character.id
                             isEditing = true
                         } label: {
                             VStack(spacing: 10) {
-                                Text(character.name.isEmpty ? "Pooh" : character.name)
-                                    .font(.headline)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                HStack(spacing: 8) {
+                                    if isActive {
+                                        Image(systemName: "star.fill")
+                                            .foregroundStyle(.yellow)
+                                    }
+                                    Text(character.name.isEmpty ? "Pooh" : character.name)
+                                        .font(.headline)
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
 
                                 BearWidgetView(
                                     bodyColor: character.bodyColor,
@@ -64,8 +72,21 @@ struct ContentView: View {
                                 .frame(maxWidth: 320)
                             }
                             .padding(.vertical, 8)
+                            .padding(.horizontal, 6)
+                            .background(
+                                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                    .fill(isActive ? Color(red: 0.93, green: 0.88, blue: 0.98) : Color.clear)
+                            )
                         }
                         .buttonStyle(.plain)
+                        .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                            Button {
+                                model.activeId = character.id
+                            } label: {
+                                Label("Use", systemImage: "star.fill")
+                            }
+                            .tint(.green)
+                        }
                     }
                     .onDelete { offsets in
                         pendingDeleteOffsets = offsets
