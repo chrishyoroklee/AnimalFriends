@@ -32,17 +32,17 @@ struct BearProvider: TimelineProvider {
     }
 
     private func loadEntry() -> BearEntry {
-        let defaults = BearSettings.defaults()
-        let bodyRaw = defaults.string(forKey: BearSettings.bodyKey) ?? BearBodyColor.caramel.rawValue
-        let shirtRaw = defaults.string(forKey: BearSettings.shirtKey) ?? BearShirt.hoodie.rawValue
-        let pantsRaw = defaults.string(forKey: BearSettings.pantsKey) ?? BearPants.jeans.rawValue
+        let loaded = BearCharacterStore.load()
+        let characters = loaded.0
+        let activeId = loaded.1
+        let active = characters.first { $0.id == activeId } ?? characters.first ?? BearCharacter.default()
 
         return BearEntry(
             date: .now,
-            bodyColor: BearBodyColor(rawValue: bodyRaw) ?? .caramel,
-            shirt: BearShirt(rawValue: shirtRaw) ?? .hoodie,
-            pants: BearPants(rawValue: pantsRaw) ?? .jeans,
-            name: defaults.string(forKey: BearSettings.nameKey) ?? "Pooh"
+            bodyColor: active.bodyColor,
+            shirt: active.shirt,
+            pants: active.pants,
+            name: active.name.isEmpty ? "Pooh" : active.name
         )
     }
 }

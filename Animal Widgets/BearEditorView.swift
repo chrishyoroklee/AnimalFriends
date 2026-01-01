@@ -11,21 +11,18 @@ import WidgetKit
 struct BearEditorView: View {
     @Environment(\.dismiss) private var dismiss
 
-    @Binding var bodyColorRaw: String
-    @Binding var shirtRaw: String
-    @Binding var pantsRaw: String
-    @Binding var bearName: String
+    @Binding var character: BearCharacter
 
     private var bodyColor: BearBodyColor {
-        BearBodyColor(rawValue: bodyColorRaw) ?? .caramel
+        BearBodyColor(rawValue: character.bodyColorRaw) ?? .caramel
     }
 
     private var shirt: BearShirt {
-        BearShirt(rawValue: shirtRaw) ?? .hoodie
+        BearShirt(rawValue: character.shirtRaw) ?? .hoodie
     }
 
     private var pants: BearPants {
-        BearPants(rawValue: pantsRaw) ?? .jeans
+        BearPants(rawValue: character.pantsRaw) ?? .jeans
     }
 
     var body: some View {
@@ -36,38 +33,38 @@ struct BearEditorView: View {
 
                 Form {
                     Section("Name") {
-                        TextField("Name", text: $bearName)
+                        TextField("Name", text: $character.name)
                             .textInputAutocapitalization(.words)
                     }
 
-                    Picker("Body Color", selection: $bodyColorRaw) {
+                    Picker("Body Color", selection: $character.bodyColorRaw) {
                         ForEach(BearBodyColor.allCases) { color in
                             Text(color.label).tag(color.rawValue)
                         }
                     }
 
-                    Picker("Shirt", selection: $shirtRaw) {
+                    Picker("Shirt", selection: $character.shirtRaw) {
                         ForEach(BearShirt.allCases) { item in
                             Text(item.label).tag(item.rawValue)
                         }
                     }
 
-                    Picker("Pants", selection: $pantsRaw) {
+                    Picker("Pants", selection: $character.pantsRaw) {
                         ForEach(BearPants.allCases) { item in
                             Text(item.label).tag(item.rawValue)
                         }
                     }
                 }
-                .onChange(of: bodyColorRaw) {
+                .onChange(of: character.bodyColorRaw) {
                     WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
                 }
-                .onChange(of: shirtRaw) {
+                .onChange(of: character.shirtRaw) {
                     WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
                 }
-                .onChange(of: pantsRaw) {
+                .onChange(of: character.pantsRaw) {
                     WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
                 }
-                .onChange(of: bearName) {
+                .onChange(of: character.name) {
                     WidgetCenter.shared.reloadTimelines(ofKind: "Animal_WidgetsWidget")
                 }
             }
@@ -86,9 +83,6 @@ struct BearEditorView: View {
 
 #Preview {
     BearEditorView(
-        bodyColorRaw: .constant(BearBodyColor.caramel.rawValue),
-        shirtRaw: .constant(BearShirt.hoodie.rawValue),
-        pantsRaw: .constant(BearPants.jeans.rawValue),
-        bearName: .constant("Pooh")
+        character: .constant(BearCharacter.default(name: "Pooh"))
     )
 }
