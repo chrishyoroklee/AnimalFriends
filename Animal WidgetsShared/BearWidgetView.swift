@@ -11,20 +11,30 @@ struct BearWidgetView: View {
     let bodyColor: BearBodyColor
     let shirt: BearShirt
     let pants: BearPants
+    var showsCard: Bool = true
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(.white)
-                .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
+        GeometryReader { proxy in
+            let designSize = CGSize(width: 320, height: 200)
+            let scale = min(proxy.size.width / designSize.width, proxy.size.height / designSize.height)
 
-            VStack(spacing: 10) {
-                BearHead(bodyColor: bodyColor.color)
-                BearOutfit(bodyColor: bodyColor.color, shirt: shirt, pants: pants)
+            ZStack {
+                if showsCard {
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .fill(.white)
+                        .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
+                }
+
+                VStack(spacing: 10) {
+                    BearHead(bodyColor: bodyColor.color)
+                    BearOutfit(bodyColor: bodyColor.color, shirt: shirt, pants: pants)
+                }
+                .padding(18)
             }
-            .padding(18)
+            .frame(width: designSize.width, height: designSize.height)
+            .scaleEffect(scale)
+            .position(x: proxy.size.width / 2, y: proxy.size.height / 2)
         }
-        .aspectRatio(1.6, contentMode: .fit)
     }
 }
 

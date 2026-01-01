@@ -55,7 +55,7 @@ struct Animal_WidgetsWidgetEntryView: View {
             case .accessoryRectangular:
                 BearLockScreenView(bodyColor: entry.bodyColor, shirt: entry.shirt, pants: entry.pants)
             default:
-                BearWidgetView(bodyColor: entry.bodyColor, shirt: entry.shirt, pants: entry.pants)
+                BearWidgetView(bodyColor: entry.bodyColor, shirt: entry.shirt, pants: entry.pants, showsCard: false)
             }
         }
         .widgetURL(URL(string: "animalwidgets://edit"))
