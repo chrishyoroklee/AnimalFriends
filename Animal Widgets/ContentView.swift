@@ -38,11 +38,13 @@ struct ContentView: View {
     @State private var newName = ""
     @State private var editingId: UUID?
     @State private var isCreating = false
+    @State private var showingDeleteConfirm = false
+    @State private var pendingDeleteOffsets: IndexSet = []
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                LazyVStack(spacing: 16) {
+            List {
+                Section {
                     ForEach(model.characters) { character in
                         Button {
                             model.activeId = character.id
@@ -61,15 +63,17 @@ struct ContentView: View {
                                 )
                                 .frame(maxWidth: 320)
                             }
-                            .padding(16)
-                            .background(
-                                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                    .fill(Color(.secondarySystemBackground))
-                            )
+                            .padding(.vertical, 8)
                         }
                         .buttonStyle(.plain)
                     }
+                    .onDelete { offsets in
+                        pendingDeleteOffsets = offsets
+                        showingDeleteConfirm = true
+                    }
+                }
 
+                Section {
                     Button {
                         newName = ""
                         isCreating = true
@@ -80,17 +84,12 @@ struct ContentView: View {
                         }
                         .font(.headline)
                         .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                .strokeBorder(style: StrokeStyle(lineWidth: 2, dash: [6]))
-                                .foregroundStyle(.secondary)
-                        )
+                        .padding(.vertical, 8)
                     }
                     .buttonStyle(.plain)
                 }
-                .padding()
             }
+            .listStyle(.insetGrouped)
             .navigationTitle("Animal Widgets")
         }
         .sheet(isPresented: $isEditing) {
@@ -149,6 +148,17 @@ struct ContentView: View {
                     isEditing = true
                 }
             }
+        }
+        .alert("Delete Character?", isPresented: $showingDeleteConfirm) {
+            Button("Cancel", role: .cancel) {
+                pendingDeleteOffsets = []
+            }
+            Button("Delete", role: .destructive) {
+                model.delete(at: pendingDeleteOffsets)
+                pendingDeleteOffsets = []
+            }
+        } message: {
+            Text("This will remove the character and its outfit.")
         }
     }
 
