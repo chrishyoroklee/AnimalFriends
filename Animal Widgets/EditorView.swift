@@ -51,13 +51,43 @@ struct EditorView: View {
                             }
                         }
                     } label: {
-                        RoundedRectangle(cornerRadius: 10, style: .continuous)
-                            .fill(bodyColor.color)
-                            .frame(width: 46, height: 18)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                    .stroke(Color.black.opacity(0.12), lineWidth: 1)
+                        HStack(spacing: 10) {
+                            HStack(spacing: 6) {
+                                Text("Color")
+                                    .font(.caption.weight(.semibold))
+                                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                    .fill(bodyColor.color)
+                                    .frame(width: 28, height: 16)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                            .stroke(Color.black.opacity(0.15), lineWidth: 1)
+                                    )
+                            }
+                            .padding(.vertical, 6)
+                            .padding(.horizontal, 10)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                    .fill(Color(.secondarySystemBackground))
                             )
+
+                            HStack(spacing: 6) {
+                                Text("Wardrobe")
+                                    .font(.caption.weight(.semibold))
+                                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                    .fill(Color(.systemGray4))
+                                    .frame(width: 28, height: 16)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                            .stroke(Color.black.opacity(0.15), lineWidth: 1)
+                                    )
+                            }
+                            .padding(.vertical, 6)
+                            .padding(.horizontal, 10)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                    .fill(Color(.secondarySystemBackground))
+                            )
+                        }
                     }
                     .buttonStyle(.plain)
 
