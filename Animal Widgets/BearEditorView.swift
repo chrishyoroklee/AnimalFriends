@@ -11,14 +11,9 @@ import WidgetKit
 struct BearEditorView: View {
     @Environment(\.dismiss) private var dismiss
 
-    @AppStorage(BearSettings.bodyKey, store: BearSettings.defaults())
-    private var bodyColorRaw = BearBodyColor.caramel.rawValue
-
-    @AppStorage(BearSettings.shirtKey, store: BearSettings.defaults())
-    private var shirtRaw = BearShirt.hoodie.rawValue
-
-    @AppStorage(BearSettings.pantsKey, store: BearSettings.defaults())
-    private var pantsRaw = BearPants.jeans.rawValue
+    @Binding var bodyColorRaw: String
+    @Binding var shirtRaw: String
+    @Binding var pantsRaw: String
 
     private var bodyColor: BearBodyColor {
         BearBodyColor(rawValue: bodyColorRaw) ?? .caramel
@@ -81,5 +76,9 @@ struct BearEditorView: View {
 }
 
 #Preview {
-    BearEditorView()
+    BearEditorView(
+        bodyColorRaw: .constant(BearBodyColor.caramel.rawValue),
+        shirtRaw: .constant(BearShirt.hoodie.rawValue),
+        pantsRaw: .constant(BearPants.jeans.rawValue)
+    )
 }
