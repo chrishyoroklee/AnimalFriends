@@ -45,6 +45,7 @@ struct ContentView: View {
     @State private var pendingShareName = ""
     @AppStorage(BearSettings.cashKey, store: BearSettings.defaults())
     private var cashBalance = 250
+    @State private var showingFocus = false
 
     var body: some View {
         NavigationStack {
@@ -133,6 +134,23 @@ struct ContentView: View {
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Balance: \(cashBalance)")
+        }
+        .overlay(alignment: .bottom) {
+            Button {
+                showingFocus = true
+            } label: {
+                Text("FOCUS")
+                    .font(.headline.weight(.heavy))
+                    .foregroundStyle(.white)
+                    .padding(.vertical, 14)
+                    .padding(.horizontal, 44)
+                    .background(
+                        Capsule(style: .continuous)
+                            .fill(Color.black)
+                    )
+                    .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 6)
+            }
+            .padding(.bottom, 70)
         }
         .sheet(isPresented: $isEditing) {
             if let editingId, let binding = binding(for: editingId) {
@@ -263,6 +281,11 @@ struct ContentView: View {
             Button("OK") { }
         } message: {
             Text("Sharing for \(pendingShareName) is coming soon.")
+        }
+        .sheet(isPresented: $showingFocus) {
+            FocusTimerView { minutes in
+                cashBalance += minutes
+            }
         }
     }
 
