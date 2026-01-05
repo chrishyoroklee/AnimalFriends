@@ -22,9 +22,9 @@ struct Animal_WidgetsApp: App {
                         Label("Store", systemImage: "bag")
                     }
                 
-                ProfileView()
+                InventoryView()
                     .tabItem {
-                        Label("Profile", systemImage: "person.fill")
+                        Label("Inventory", systemImage: "tray.full")
                     }
             }
         }
