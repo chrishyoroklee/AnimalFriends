@@ -11,10 +11,22 @@ struct StoreView: View {
     @AppStorage(BearSettings.cashKey, store: BearSettings.defaults())
     private var cashBalance = 250
     @State private var ownedItemIds: Set<String> = []
+    @State private var showingConfirm = false
+    @State private var pendingItem: StoreItem?
 
     var body: some View {
         NavigationStack {
             List {
+                Section {
+                    HStack {
+                        Text("Balance")
+                            .font(.headline)
+                        Spacer()
+                        Text("\(cashBalance)")
+                            .font(.headline)
+                    }
+                }
+
                 Section("Items") {
                     ForEach(demoStoreItems) { item in
                         let isOwned = ownedItemIds.contains(item.id)
@@ -40,7 +52,8 @@ struct StoreView: View {
                                     .foregroundStyle(.secondary)
                             } else {
                                 Button("Buy \(item.price)") {
-                                    buy(item)
+                                    pendingItem = item
+                                    showingConfirm = true
                                 }
                                 .buttonStyle(.borderedProminent)
                                 .disabled(cashBalance < item.price)
@@ -55,6 +68,18 @@ struct StoreView: View {
         }
         .onAppear {
             ownedItemIds = Set(InventoryStore.load())
+        }
+        .alert("Confirm Purchase", isPresented: $showingConfirm) {
+            Button("Cancel", role: .cancel) { }
+            Button("Buy", role: .destructive) {
+                if let item = pendingItem {
+                    buy(item)
+                }
+            }
+        } message: {
+            if let item = pendingItem {
+                Text("Buy \(item.name) for \(item.price)?")
+            }
         }
     }
 
