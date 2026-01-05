@@ -95,10 +95,14 @@ struct FocusTimerView: View {
         }
         .onAppear {
             remainingSeconds = minutes * 60
+            AudioManager.shared.playLooping(track: "waltz3")
         }
         .onChange(of: minutes) {
             guard !isRunning else { return }
             remainingSeconds = minutes * 60
+        }
+        .onDisappear {
+            AudioManager.shared.playLooping(track: "waltz1")
         }
         .alert("Stop Focus Session?", isPresented: $showingStopConfirm) {
             Button("Keep Going", role: .cancel) { }

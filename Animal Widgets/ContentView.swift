@@ -135,6 +135,9 @@ struct ContentView: View {
             .listStyle(.insetGrouped)
             .navigationTitle("Balance: \(cashBalance)")
         }
+        .onAppear {
+            AudioManager.shared.playLooping(track: "waltz1")
+        }
         .overlay(alignment: .bottom) {
             Button {
                 showingFocus = true

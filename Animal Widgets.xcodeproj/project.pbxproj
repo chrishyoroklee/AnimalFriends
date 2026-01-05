@@ -60,6 +60,10 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Assets.xcassets,
+				waltz1.mp3,
+				waltz2.mp3,
+				waltz3.mp3,
+				waltz4.mp3,
 			);
 			target = 40A1D5A42F10000000000001 /* Animal WidgetsWidget */;
 		};
