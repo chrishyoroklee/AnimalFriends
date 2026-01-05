@@ -16,6 +16,7 @@ struct FocusTimerView: View {
     @State private var isRunning = false
     @State private var rewardMinutes = 0
     @State private var didComplete = false
+    @State private var showingStopConfirm = false
 
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
@@ -60,7 +61,7 @@ struct FocusTimerView: View {
 
                     if isRunning {
                         Button("Stop") {
-                            stopSession(reward: false)
+                            showingStopConfirm = true
                         }
                         .buttonStyle(.bordered)
                     } else {
@@ -98,6 +99,14 @@ struct FocusTimerView: View {
         .onChange(of: minutes) {
             guard !isRunning else { return }
             remainingSeconds = minutes * 60
+        }
+        .alert("Stop Focus Session?", isPresented: $showingStopConfirm) {
+            Button("Keep Going", role: .cancel) { }
+            Button("Stop", role: .destructive) {
+                stopSession(reward: false)
+            }
+        } message: {
+            Text("You won't earn cash unless you finish the full timer.")
         }
     }
 
