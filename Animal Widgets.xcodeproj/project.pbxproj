@@ -55,9 +55,22 @@
 		40A1D5A52F10000000000001 /* Animal WidgetsWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Animal WidgetsWidget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		404ADFF22F0BED1600CBD904 /* Exceptions for "Animal Widgets" folder in "Animal WidgetsWidget" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+			);
+			target = 40A1D5A42F10000000000001 /* Animal WidgetsWidget */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		401EC7452F046E8900BF3954 /* Animal Widgets */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				404ADFF22F0BED1600CBD904 /* Exceptions for "Animal Widgets" folder in "Animal WidgetsWidget" target */,
+			);
 			path = "Animal Widgets";
 			sourceTree = "<group>";
 		};

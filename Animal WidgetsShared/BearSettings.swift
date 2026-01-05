@@ -86,6 +86,25 @@ enum AnimalHead: String, CaseIterable, Identifiable, Codable {
     }
 }
 
+enum AnimalKind: String, CaseIterable, Identifiable, Codable {
+    case bear
+    case pig
+    case pig2
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .bear:
+            return "Bear"
+        case .pig:
+            return "Pig"
+        case .pig2:
+            return "Pig 2"
+        }
+    }
+}
+
 struct BearSettings {
     static let appGroupID = "group.com.hyoroklee.animalfriends"
 
@@ -93,6 +112,7 @@ struct BearSettings {
     static let shirtKey = "bear.shirt"
     static let pantsKey = "bear.pants"
     static let nameKey = "bear.name"
+    static let cashKey = "user.cash"
 
     static func defaults() -> UserDefaults {
         UserDefaults(suiteName: appGroupID) ?? .standard

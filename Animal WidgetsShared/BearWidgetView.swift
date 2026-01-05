@@ -39,6 +39,88 @@ struct BearWidgetView: View {
     }
 }
 
+struct AnimalCharacterView: View {
+    let kind: AnimalKind
+    let bodyColor: BearBodyColor
+    let shirt: BearShirt
+    let pants: BearPants
+    let head: AnimalHead
+    var showsCard: Bool = true
+
+    var body: some View {
+        switch kind {
+        case .bear:
+            BearWidgetView(
+                bodyColor: bodyColor,
+                shirt: shirt,
+                pants: pants,
+                head: head,
+                showsCard: showsCard
+            )
+        case .pig:
+            PigCharacterView(showsCard: showsCard)
+        case .pig2:
+            Pig2CharacterView(showsCard: showsCard)
+        }
+    }
+}
+
+private struct PigCharacterView: View {
+    var showsCard: Bool = true
+
+    var body: some View {
+        GeometryReader { proxy in
+            let designSize = CGSize(width: 320, height: 200)
+            let scale = min(proxy.size.width / designSize.width, proxy.size.height / designSize.height)
+
+            ZStack {
+                if showsCard {
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .fill(.white)
+                        .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
+                }
+
+                Image("PigCharacter")
+                    .resizable()
+                    .scaledToFit()
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 30)
+            }
+            .frame(width: designSize.width, height: designSize.height)
+            .scaleEffect(scale)
+            .position(x: proxy.size.width / 2, y: proxy.size.height / 2)
+        }
+    }
+}
+
+private struct Pig2CharacterView: View {
+    var showsCard: Bool = true
+
+    var body: some View {
+        GeometryReader { proxy in
+            let designSize = CGSize(width: 320, height: 200)
+            let scale = min(proxy.size.width / designSize.width, proxy.size.height / designSize.height)
+
+            ZStack {
+                if showsCard {
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .fill(.white)
+                        .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
+                }
+
+                Image("Pig2")
+                    .resizable()
+                    .scaledToFit()
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 30)
+            }
+            .frame(width: designSize.width, height: designSize.height)
+            .scaleEffect(scale)
+            .position(x: proxy.size.width / 2, y: proxy.size.height / 2)
+        }
+    }
+}
+
 private struct AnimalHeadView: View {
     let head: AnimalHead
     let bodyColor: Color

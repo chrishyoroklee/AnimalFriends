@@ -32,83 +32,102 @@ struct EditorView: View {
         AnimalHead(rawValue: character.headRaw) ?? .bear
     }
 
+    private var kind: AnimalKind {
+        AnimalKind(rawValue: character.kindRaw) ?? .bear
+    }
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 16) {
-                VStack(spacing: 10) {
-                    Menu {
-                        ForEach(BearBodyColor.allCases) { color in
-                            Button {
-                                character.bodyColorRaw = color.rawValue
-                            } label: {
-                                HStack(spacing: 10) {
-                                    Text(color.label)
-                                    Spacer()
-                                    RoundedRectangle(cornerRadius: 4, style: .continuous)
-                                        .fill(color.color)
+                if kind == .bear {
+                    VStack(spacing: 10) {
+                        Menu {
+                            ForEach(BearBodyColor.allCases) { color in
+                                Button {
+                                    character.bodyColorRaw = color.rawValue
+                                } label: {
+                                    HStack(spacing: 10) {
+                                        Text(color.label)
+                                        Spacer()
+                                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                            .fill(color.color)
+                                            .frame(width: 28, height: 16)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                                    .stroke(Color.black.opacity(0.15), lineWidth: 1)
+                                            )
+                                    }
+                                }
+                            }
+                        } label: {
+                            HStack(spacing: 10) {
+                                HStack(spacing: 6) {
+                                    Text("Color")
+                                        .font(.caption.weight(.semibold))
+                                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                        .fill(bodyColor.color)
                                         .frame(width: 28, height: 16)
                                         .overlay(
-                                            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                            RoundedRectangle(cornerRadius: 6, style: .continuous)
                                                 .stroke(Color.black.opacity(0.15), lineWidth: 1)
                                         )
                                 }
-                            }
-                        }
-                    } label: {
-                        HStack(spacing: 10) {
-                            HStack(spacing: 6) {
-                                Text("Color")
-                                    .font(.caption.weight(.semibold))
-                                RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                    .fill(bodyColor.color)
-                                    .frame(width: 28, height: 16)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                            .stroke(Color.black.opacity(0.15), lineWidth: 1)
-                                    )
-                            }
-                            .padding(.vertical, 6)
-                            .padding(.horizontal, 10)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                    .fill(Color(.secondarySystemBackground))
-                            )
+                                .padding(.vertical, 6)
+                                .padding(.horizontal, 10)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                        .fill(Color(.secondarySystemBackground))
+                                )
 
-                            HStack(spacing: 6) {
-                                Text("Wardrobe")
-                                    .font(.caption.weight(.semibold))
-                                RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                    .fill(Color(.systemGray4))
-                                    .frame(width: 28, height: 16)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                            .stroke(Color.black.opacity(0.15), lineWidth: 1)
-                                    )
+                                HStack(spacing: 6) {
+                                    Text("Wardrobe")
+                                        .font(.caption.weight(.semibold))
+                                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                        .fill(Color(.systemGray4))
+                                        .frame(width: 28, height: 16)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                                .stroke(Color.black.opacity(0.15), lineWidth: 1)
+                                        )
+                                }
+                                .padding(.vertical, 6)
+                                .padding(.horizontal, 10)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                        .fill(Color(.secondarySystemBackground))
+                                )
                             }
-                            .padding(.vertical, 6)
-                            .padding(.horizontal, 10)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                    .fill(Color(.secondarySystemBackground))
-                            )
                         }
-                    }
-                    .buttonStyle(.plain)
+                        .buttonStyle(.plain)
 
-                    ZStack {
-                        BearWidgetView(bodyColor: bodyColor, shirt: shirt, pants: pants, head: head)
-                        EditorHitTargets { selection in
-                            switch selection {
-                            case .shirt:
-                                activeSheet = .shirt
-                            case .pants:
-                                activeSheet = .pants
-                            case .head:
-                                activeSheet = .head
+                        ZStack {
+                            BearWidgetView(bodyColor: bodyColor, shirt: shirt, pants: pants, head: head)
+                            EditorHitTargets { selection in
+                                switch selection {
+                                case .shirt:
+                                    activeSheet = .shirt
+                                case .pants:
+                                    activeSheet = .pants
+                                case .head:
+                                    activeSheet = .head
+                                }
                             }
                         }
+                        .frame(maxWidth: 360)
+                        .frame(maxWidth: .infinity)
                     }
-                    .frame(maxWidth: 360)
+                } else {
+                    VStack(spacing: 12) {
+                        Image(kind == .pig2 ? "Pig2" : "PigCharacter")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxWidth: 240, maxHeight: 220)
+                            .padding(.top, 10)
+
+                        Text("Outfits for pigs are coming soon.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                     .frame(maxWidth: .infinity)
                 }
 

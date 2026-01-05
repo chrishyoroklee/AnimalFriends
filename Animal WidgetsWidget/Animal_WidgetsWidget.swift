@@ -16,6 +16,7 @@ struct BearEntry: TimelineEntry {
     let name: String
     let characterId: UUID
     let head: AnimalHead
+    let kind: AnimalKind
 }
 
 struct BearProvider: TimelineProvider {
@@ -27,7 +28,8 @@ struct BearProvider: TimelineProvider {
             pants: .jeans,
             name: "Pooh",
             characterId: UUID(),
-            head: .bear
+            head: .bear,
+            kind: .bear
         )
     }
 
@@ -54,7 +56,8 @@ struct BearProvider: TimelineProvider {
             pants: active.pants,
             name: active.name.isEmpty ? "Pooh" : active.name,
             characterId: active.id,
-            head: active.head
+            head: active.head,
+            kind: active.kind
         )
     }
 }
@@ -72,10 +75,12 @@ struct Animal_WidgetsWidgetEntryView: View {
                     shirt: entry.shirt,
                     pants: entry.pants,
                     name: entry.name,
-                    head: entry.head
+                    head: entry.head,
+                    kind: entry.kind
                 )
             default:
-                BearWidgetView(
+                AnimalCharacterView(
+                    kind: entry.kind,
                     bodyColor: entry.bodyColor,
                     shirt: entry.shirt,
                     pants: entry.pants,
@@ -108,10 +113,12 @@ private struct BearLockScreenMiniView: View {
     let pants: BearPants
     let name: String
     let head: AnimalHead
+    let kind: AnimalKind
 
     var body: some View {
         HStack(spacing: 10) {
-            BearWidgetView(
+            AnimalCharacterView(
+                kind: kind,
                 bodyColor: bodyColor,
                 shirt: shirt,
                 pants: pants,
@@ -135,9 +142,10 @@ private struct BearLockScreenMiniView: View {
         date: .now,
         bodyColor: .caramel,
         shirt: .hoodie,
-        pants: .jeans,
-        name: "Pooh",
-        characterId: UUID(),
-        head: .bear
-    )
+            pants: .jeans,
+            name: "Pooh",
+            characterId: UUID(),
+            head: .bear,
+            kind: .bear
+        )
 }

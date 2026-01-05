@@ -18,8 +18,8 @@ final class BearCharacterListModel: ObservableObject {
         activeId = loaded.1 ?? loaded.0.first?.id
     }
 
-    func add(name: String) {
-        let newCharacter = BearCharacter.default(name: name)
+    func add(name: String, kind: AnimalKind) {
+        let newCharacter = BearCharacter.default(name: name, kind: kind)
         characters.append(newCharacter)
         activeId = newCharacter.id
     }
@@ -36,12 +36,15 @@ struct ContentView: View {
     @State private var isEditing = false
     @StateObject private var model = BearCharacterListModel()
     @State private var newName = ""
+    @State private var selectedKind: AnimalKind = .bear
     @State private var editingId: UUID?
     @State private var isCreating = false
     @State private var showingDeleteConfirm = false
     @State private var pendingDeleteOffsets: IndexSet = []
     @State private var showingShareSheet = false
     @State private var pendingShareName = ""
+    @AppStorage(BearSettings.cashKey, store: BearSettings.defaults())
+    private var cashBalance = 250
 
     var body: some View {
         NavigationStack {
@@ -49,49 +52,53 @@ struct ContentView: View {
                 Section {
                     ForEach(model.characters) { character in
                         let isActive = character.id == model.activeId
-                        Button {
+                        VStack(spacing: 10) {
+                            HStack(spacing: 8) {
+                                Button {
+                                    model.activeId = character.id
+                                } label: {
+                                    Image(systemName: isActive ? "star.fill" : "star")
+                                        .foregroundStyle(isActive ? .yellow : .secondary)
+                                }
+                                .buttonStyle(.plain)
+
+                                Text(character.name.isEmpty ? "Pooh" : character.name)
+                                    .font(.headline)
+                                Spacer()
+                                Menu {
+                                    Button("Share with a friend") {
+                                        pendingShareName = character.name.isEmpty ? "Pooh" : character.name
+                                        showingShareSheet = true
+                                    }
+                                } label: {
+                                    Image(systemName: "ellipsis")
+                                        .foregroundStyle(.secondary)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                            AnimalCharacterView(
+                                kind: character.kind,
+                                bodyColor: character.bodyColor,
+                                shirt: character.shirt,
+                                pants: character.pants,
+                                head: character.head
+                            )
+                            .frame(maxWidth: 320)
+                        }
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 6)
+                        .background(
+                            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                .fill(isActive ? Color(red: 0.93, green: 0.88, blue: 0.98) : Color.clear)
+                        )
+                        .contentShape(Rectangle())
+                        .onTapGesture {
                             model.activeId = character.id
                             editingId = character.id
                             isEditing = true
-                        } label: {
-                            VStack(spacing: 10) {
-                                HStack(spacing: 8) {
-                                    if isActive {
-                                        Image(systemName: "star.fill")
-                                            .foregroundStyle(.yellow)
-                                    }
-                                    Text(character.name.isEmpty ? "Pooh" : character.name)
-                                        .font(.headline)
-                                    Spacer()
-                                    Menu {
-                                        Button("Share with a friend") {
-                                            pendingShareName = character.name.isEmpty ? "Pooh" : character.name
-                                            showingShareSheet = true
-                                        }
-                                    } label: {
-                                        Image(systemName: "ellipsis")
-                                            .foregroundStyle(.secondary)
-                                    }
-                                    .buttonStyle(.plain)
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-
-                                BearWidgetView(
-                                    bodyColor: character.bodyColor,
-                                    shirt: character.shirt,
-                                    pants: character.pants,
-                                    head: character.head
-                                )
-                                .frame(maxWidth: 320)
-                            }
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 6)
-                            .background(
-                                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                    .fill(isActive ? Color(red: 0.93, green: 0.88, blue: 0.98) : Color.clear)
-                            )
                         }
-                        .buttonStyle(.plain)
                         .swipeActions(edge: .leading, allowsFullSwipe: true) {
                             Button {
                                 model.activeId = character.id
@@ -110,6 +117,7 @@ struct ContentView: View {
                 Section {
                     Button {
                         newName = ""
+                        selectedKind = .bear
                         isCreating = true
                     } label: {
                         HStack(spacing: 8) {
@@ -124,7 +132,7 @@ struct ContentView: View {
                 }
             }
             .listStyle(.insetGrouped)
-            .navigationTitle("Animal Widgets")
+            .navigationTitle("Balance: \(cashBalance)")
         }
         .sheet(isPresented: $isEditing) {
             if let editingId, let binding = binding(for: editingId) {
@@ -140,6 +148,55 @@ struct ContentView: View {
 
                 Text("New Character")
                     .font(.headline)
+
+                Text("Choose your starter")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+
+                HStack(spacing: 12) {
+                    CharacterOptionCard(
+                        title: "Bear",
+                        isSelected: selectedKind == .bear
+                    ) {
+                        BearWidgetView(
+                            bodyColor: .caramel,
+                            shirt: .hoodie,
+                            pants: .jeans,
+                            head: .bear,
+                            showsCard: false
+                        )
+                    } action: {
+                        selectedKind = .bear
+                    }
+
+                    CharacterOptionCard(
+                        title: "Pig",
+                        isSelected: selectedKind == .pig
+                    ) {
+                        Image("PigCharacter")
+                            .resizable()
+                            .scaledToFit()
+                            .padding(.vertical, 10)
+                            .padding(.horizontal, 12)
+                    } action: {
+                        selectedKind = .pig
+                    }
+
+                    CharacterOptionCard(
+                        title: "Pig 2",
+                        isSelected: selectedKind == .pig2
+                    ) {
+                        Image("Pig2")
+                            .resizable()
+                            .scaledToFit()
+                            .padding(.vertical, 10)
+                            .padding(.horizontal, 12)
+                    } action: {
+                        selectedKind = .pig2
+                    }
+                }
+                .frame(maxWidth: 360)
+                .padding(.horizontal)
 
                 TextField("Name", text: $newName)
                     .textInputAutocapitalization(.words)
@@ -158,14 +215,14 @@ struct ContentView: View {
 
                     Button("Create") {
                         let trimmed = newName.trimmingCharacters(in: .whitespacesAndNewlines)
-                        model.add(name: trimmed.isEmpty ? "Pooh" : trimmed)
+                        model.add(name: trimmed.isEmpty ? "Pooh" : trimmed, kind: selectedKind)
                         isCreating = false
                     }
                     .buttonStyle(.borderedProminent)
                 }
                 .padding(.bottom, 20)
             }
-            .presentationDetents([.height(220)])
+            .presentationDetents([.height(360)])
         }
         .onChange(of: model.characters) {
             BearCharacterStore.save(characters: model.characters, activeId: model.activeId)
@@ -217,6 +274,53 @@ struct ContentView: View {
             get: { model.characters[index] },
             set: { model.characters[index] = $0 }
         )
+    }
+}
+
+private struct CharacterOptionCard<Preview: View>: View {
+    let title: String
+    let isSelected: Bool
+    let preview: Preview
+    let action: () -> Void
+
+    init(
+        title: String,
+        isSelected: Bool,
+        @ViewBuilder preview: () -> Preview,
+        action: @escaping () -> Void
+    ) {
+        self.title = title
+        self.isSelected = isSelected
+        self.preview = preview()
+        self.action = action
+    }
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 8) {
+                preview
+                    .frame(width: 140, height: 110)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .fill(Color(.systemBackground))
+                            .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 3)
+                    )
+
+                Text(title)
+                    .font(.caption.weight(.semibold))
+            }
+            .frame(maxWidth: .infinity)
+            .padding(10)
+            .background(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .fill(isSelected ? Color(red: 0.93, green: 0.88, blue: 0.98) : Color(.secondarySystemBackground))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(isSelected ? Color(red: 0.60, green: 0.42, blue: 0.90) : Color.clear, lineWidth: 2)
+            )
+        }
+        .buttonStyle(.plain)
     }
 }
 
