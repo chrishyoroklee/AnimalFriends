@@ -29,9 +29,18 @@ struct FocusTimerView: View {
                     .font(.system(size: 48, weight: .bold, design: .rounded))
                     .monospacedDigit()
 
-                Stepper("Minutes: \(minutes)", value: $minutes, in: 1...120)
-                    .disabled(isRunning)
+                VStack(spacing: 10) {
+                    Text("Minutes: \(minutes)")
+                        .font(.headline)
+
+                    FocusSlider(
+                        value: $minutes,
+                        range: 1...120,
+                        isEnabled: !isRunning
+                    )
+                    .frame(height: 44)
                     .padding(.horizontal)
+                }
 
                 if didComplete {
                     Text("You earned \(rewardMinutes) cash!")
@@ -86,6 +95,10 @@ struct FocusTimerView: View {
         .onAppear {
             remainingSeconds = minutes * 60
         }
+        .onChange(of: minutes) {
+            guard !isRunning else { return }
+            remainingSeconds = minutes * 60
+        }
     }
 
     private var timeString: String {
@@ -108,6 +121,54 @@ struct FocusTimerView: View {
             didComplete = true
             onReward(rewardMinutes)
         }
+    }
+}
+
+private struct FocusSlider: View {
+    @Binding var value: Int
+    let range: ClosedRange<Int>
+    let isEnabled: Bool
+
+    var body: some View {
+        GeometryReader { proxy in
+            let width = proxy.size.width
+            let knobSize: CGFloat = 30
+            let trackHeight: CGFloat = 8
+            let clamped = min(max(value, range.lowerBound), range.upperBound)
+            let progress = CGFloat(clamped - range.lowerBound) / CGFloat(range.upperBound - range.lowerBound)
+            let x = progress * (width - knobSize) + knobSize / 2
+
+            ZStack(alignment: .leading) {
+                Capsule(style: .continuous)
+                    .fill(Color(.secondarySystemBackground))
+                    .frame(height: trackHeight)
+
+                Capsule(style: .continuous)
+                    .fill(isEnabled ? Color.black : Color(.systemGray3))
+                    .frame(width: x, height: trackHeight)
+
+                Circle()
+                    .fill(isEnabled ? Color.black : Color(.systemGray3))
+                    .frame(width: knobSize, height: knobSize)
+                    .overlay(
+                        Circle()
+                            .stroke(Color.white.opacity(0.6), lineWidth: 2)
+                    )
+                    .position(x: x, y: trackHeight / 2)
+            }
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { gesture in
+                        guard isEnabled else { return }
+                        let clampedX = min(max(gesture.location.x, 0), width)
+                        let percent = clampedX / width
+                        let rawValue = Int(round(percent * CGFloat(range.upperBound - range.lowerBound))) + range.lowerBound
+                        value = min(max(rawValue, range.lowerBound), range.upperBound)
+                    }
+            )
+        }
+        .frame(maxWidth: .infinity)
     }
 }
 
