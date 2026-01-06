@@ -52,6 +52,8 @@ struct InventoryView: View {
                 }
             }
             .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(AppTheme.background)
             .navigationTitle("Inventory")
         }
         .onAppear {

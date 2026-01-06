@@ -29,6 +29,8 @@ struct SettingsView: View {
             }
         }
         .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .background(AppTheme.background)
         .navigationTitle("Settings")
         .onChange(of: musicSelection) {
             AudioManager.shared.playLooping(track: musicSelection)

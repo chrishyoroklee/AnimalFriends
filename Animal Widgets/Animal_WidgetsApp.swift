@@ -32,6 +32,8 @@ struct Animal_WidgetsApp: App {
                         Label("FarmDemo", systemImage: "leaf.fill")
                     }
             }
+            .tint(AppTheme.primary)
+            .preferredColorScheme(.light)
         }
     }
 }

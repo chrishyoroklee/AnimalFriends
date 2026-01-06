@@ -76,6 +76,7 @@ struct FocusTimerView: View {
                 Spacer()
             }
             .padding()
+            .background(AppTheme.secondary.ignoresSafeArea())
             .onReceive(timer) { _ in
                 guard isRunning else { return }
                 if remainingSeconds > 0 {

@@ -64,6 +64,8 @@ struct StoreView: View {
                 }
             }
             .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(AppTheme.background)
             .navigationTitle("Shop")
         }
         .onAppear {

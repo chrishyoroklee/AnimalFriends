@@ -12,7 +12,7 @@ struct FarmDemoView: View {
     var scene: SKScene {
         let scene = FarmDemoScene()
         scene.scaleMode = .resizeFill
-        scene.backgroundColor = UIColor(red: 0.78, green: 0.93, blue: 0.78, alpha: 1.0)
+        scene.backgroundColor = AppTheme.uiBackground
         return scene
     }
 
@@ -43,7 +43,7 @@ final class FarmDemoScene: SKScene {
 
     private func addBackground() {
         let ground = SKShapeNode(rectOf: CGSize(width: size.width, height: size.height))
-        ground.fillColor = UIColor(red: 0.78, green: 0.93, blue: 0.78, alpha: 1.0)
+        ground.fillColor = AppTheme.uiBackground
         ground.strokeColor = .clear
         ground.position = CGPoint(x: size.width / 2, y: size.height / 2)
         addChild(ground)

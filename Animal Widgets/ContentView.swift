@@ -135,6 +135,8 @@ struct ContentView: View {
                 }
             }
             .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(AppTheme.background)
             .navigationTitle("Balance: \(cashBalance)")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
