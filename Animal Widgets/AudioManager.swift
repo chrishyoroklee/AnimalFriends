@@ -83,4 +83,8 @@ final class AudioManager {
             remaining -= 1
         }
     }
+
+    func currentTrackName() -> String? {
+        currentTrack
+    }
 }

@@ -45,6 +45,8 @@ struct ContentView: View {
     @State private var pendingShareName = ""
     @AppStorage(BearSettings.cashKey, store: BearSettings.defaults())
     private var cashBalance = 250
+    @AppStorage(BearSettings.musicKey, store: BearSettings.defaults())
+    private var musicSelection = "waltz1"
     @State private var showingFocus = false
 
     var body: some View {
@@ -134,9 +136,18 @@ struct ContentView: View {
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Balance: \(cashBalance)")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink {
+                        SettingsView()
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                    }
+                }
+            }
         }
         .onAppear {
-            AudioManager.shared.playLooping(track: "waltz1")
+            AudioManager.shared.playLooping(track: musicSelection)
         }
         .overlay(alignment: .bottom) {
             Button {

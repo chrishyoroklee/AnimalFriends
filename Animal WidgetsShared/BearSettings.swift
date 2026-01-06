@@ -114,6 +114,7 @@ struct BearSettings {
     static let nameKey = "bear.name"
     static let cashKey = "user.cash"
     static let inventoryKey = "user.inventory"
+    static let musicKey = "user.music"
 
     static func defaults() -> UserDefaults {
         UserDefaults(suiteName: appGroupID) ?? .standard

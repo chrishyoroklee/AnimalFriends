@@ -26,6 +26,11 @@ struct Animal_WidgetsApp: App {
                     .tabItem {
                         Label("Inventory", systemImage: "tray.full")
                     }
+
+                FarmDemoView()
+                    .tabItem {
+                        Label("FarmDemo", systemImage: "leaf.fill")
+                    }
             }
         }
     }
