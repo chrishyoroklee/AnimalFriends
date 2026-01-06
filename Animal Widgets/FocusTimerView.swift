@@ -134,6 +134,7 @@ struct FocusTimerView: View {
         if reward {
             didComplete = true
             onReward(rewardMinutes)
+            NotificationCenter.default.post(name: .cashBalanceDidChange, object: nil)
         }
     }
 }

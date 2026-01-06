@@ -90,6 +90,7 @@ struct StoreView: View {
         cashBalance -= item.price
         ownedItemIds.insert(item.id)
         InventoryStore.save(Array(ownedItemIds))
+        NotificationCenter.default.post(name: .cashBalanceDidChange, object: nil)
     }
 }
 

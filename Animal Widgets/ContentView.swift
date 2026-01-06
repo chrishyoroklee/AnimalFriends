@@ -137,8 +137,20 @@ struct ContentView: View {
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
             .background(AppTheme.background)
-            .navigationTitle("Balance: \(cashBalance)")
+            .navigationTitle("Farm House")
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "dollarsign.circle.fill")
+                            .foregroundStyle(AppTheme.primary)
+                        Text("\(cashBalance)")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.primary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
                         SettingsView()
@@ -150,6 +162,13 @@ struct ContentView: View {
         }
         .onAppear {
             AudioManager.shared.playLooping(track: musicSelection)
+            cashBalance = BearSettings.defaults().integer(forKey: BearSettings.cashKey)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification, object: BearSettings.defaults())) { _ in
+            cashBalance = BearSettings.defaults().integer(forKey: BearSettings.cashKey)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .cashBalanceDidChange)) { _ in
+            cashBalance = BearSettings.defaults().integer(forKey: BearSettings.cashKey)
         }
         .overlay(alignment: .bottom) {
             Button {
