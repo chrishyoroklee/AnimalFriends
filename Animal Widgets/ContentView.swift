@@ -18,10 +18,14 @@ final class BearCharacterListModel: ObservableObject {
         activeId = loaded.1 ?? loaded.0.first?.id
     }
 
-    func add(name: String, kind: AnimalKind) {
-        let newCharacter = BearCharacter.default(name: name, kind: kind)
+    func add(kind: AnimalKind) {
+        let newCharacter = BearCharacter.default(kind: kind)
         characters.append(newCharacter)
         activeId = newCharacter.id
+    }
+
+    func hasCharacter(of kind: AnimalKind) -> Bool {
+        characters.contains { $0.kind == kind }
     }
 
     func delete(at offsets: IndexSet) {
@@ -35,8 +39,6 @@ final class BearCharacterListModel: ObservableObject {
 struct ContentView: View {
     @State private var isEditing = false
     @StateObject private var model = BearCharacterListModel()
-    @State private var newName = ""
-    @State private var selectedKind: AnimalKind = .bear
     @State private var editingId: UUID?
     @State private var isCreating = false
     @State private var showingDeleteConfirm = false
@@ -65,12 +67,12 @@ struct ContentView: View {
                                 }
                                 .buttonStyle(.plain)
 
-                                Text(character.name.isEmpty ? "Pooh" : character.name)
+                                Text(character.kind.label)
                                     .font(.headline)
                                 Spacer()
                                 Menu {
                                     Button("Share with a friend") {
-                                        pendingShareName = character.name.isEmpty ? "Pooh" : character.name
+                                        pendingShareName = character.kind.label
                                         showingShareSheet = true
                                     }
                                 } label: {
@@ -117,21 +119,21 @@ struct ContentView: View {
                     }
                 }
 
-                Section {
-                    Button {
-                        newName = ""
-                        selectedKind = .bear
-                        isCreating = true
-                    } label: {
-                        HStack(spacing: 8) {
-                            Image(systemName: "plus.circle.fill")
-                            Text("Add New Character")
+                if !model.hasCharacter(of: .bear) {
+                    Section {
+                        Button {
+                            isCreating = true
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: "plus.circle.fill")
+                                Text("Add New Character")
+                            }
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
                         }
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
             }
             .listStyle(.insetGrouped)
@@ -202,63 +204,15 @@ struct ContentView: View {
                 Text("New Character")
                     .font(.headline)
 
-                Text("Choose your starter")
+                Text("Add Bear to your farm")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.secondary)
 
-                HStack(spacing: 12) {
-                    CharacterOptionCard(
-                        title: "Bear",
-                        isSelected: selectedKind == .bear
-                    ) {
-                        BearWidgetView(
-                            bodyColor: .caramel,
-                            shirt: .hoodie,
-                            pants: .jeans,
-                            head: .bear,
-                            showsCard: false
-                        )
-                    } action: {
-                        selectedKind = .bear
-                    }
-
-                    CharacterOptionCard(
-                        title: "Pig",
-                        isSelected: selectedKind == .pig
-                    ) {
-                        Image("PigCharacter")
-                            .resizable()
-                            .scaledToFit()
-                            .padding(.vertical, 10)
-                            .padding(.horizontal, 12)
-                    } action: {
-                        selectedKind = .pig
-                    }
-
-                    CharacterOptionCard(
-                        title: "Pig 2",
-                        isSelected: selectedKind == .pig2
-                    ) {
-                        Image("Pig2")
-                            .resizable()
-                            .scaledToFit()
-                            .padding(.vertical, 10)
-                            .padding(.horizontal, 12)
-                    } action: {
-                        selectedKind = .pig2
-                    }
-                }
-                .frame(maxWidth: 360)
-                .padding(.horizontal)
-
-                TextField("Name", text: $newName)
-                    .textInputAutocapitalization(.words)
-                    .padding(12)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(Color(.secondarySystemBackground))
-                    )
-                    .padding(.horizontal)
+                Image("Bear1")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 160, height: 180)
+                    .padding()
 
                 HStack(spacing: 12) {
                     Button("Cancel") {
@@ -267,15 +221,14 @@ struct ContentView: View {
                     .buttonStyle(.bordered)
 
                     Button("Create") {
-                        let trimmed = newName.trimmingCharacters(in: .whitespacesAndNewlines)
-                        model.add(name: trimmed.isEmpty ? "Pooh" : trimmed, kind: selectedKind)
+                        model.add(kind: .bear)
                         isCreating = false
                     }
                     .buttonStyle(.borderedProminent)
                 }
                 .padding(.bottom, 20)
             }
-            .presentationDetents([.height(360)])
+            .presentationDetents([.height(340)])
         }
         .onChange(of: model.characters) {
             BearCharacterStore.save(characters: model.characters, activeId: model.activeId)
@@ -332,53 +285,6 @@ struct ContentView: View {
             get: { model.characters[index] },
             set: { model.characters[index] = $0 }
         )
-    }
-}
-
-private struct CharacterOptionCard<Preview: View>: View {
-    let title: String
-    let isSelected: Bool
-    let preview: Preview
-    let action: () -> Void
-
-    init(
-        title: String,
-        isSelected: Bool,
-        @ViewBuilder preview: () -> Preview,
-        action: @escaping () -> Void
-    ) {
-        self.title = title
-        self.isSelected = isSelected
-        self.preview = preview()
-        self.action = action
-    }
-
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: 8) {
-                preview
-                    .frame(width: 140, height: 110)
-                    .background(
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .fill(Color(.systemBackground))
-                            .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 3)
-                    )
-
-                Text(title)
-                    .font(.caption.weight(.semibold))
-            }
-            .frame(maxWidth: .infinity)
-            .padding(10)
-            .background(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(isSelected ? Color(red: 0.93, green: 0.88, blue: 0.98) : Color(.secondarySystemBackground))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .stroke(isSelected ? Color(red: 0.60, green: 0.42, blue: 0.90) : Color.clear, lineWidth: 2)
-            )
-        }
-        .buttonStyle(.plain)
     }
 }
 

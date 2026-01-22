@@ -88,8 +88,6 @@ enum AnimalHead: String, CaseIterable, Identifiable, Codable {
 
 enum AnimalKind: String, CaseIterable, Identifiable, Codable {
     case bear
-    case pig
-    case pig2
 
     var id: String { rawValue }
 
@@ -97,10 +95,6 @@ enum AnimalKind: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .bear:
             return "Bear"
-        case .pig:
-            return "Pig"
-        case .pig2:
-            return "Pig 2"
         }
     }
 }

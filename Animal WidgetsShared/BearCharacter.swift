@@ -75,10 +75,10 @@ struct BearCharacter: Identifiable, Codable, Equatable {
         AnimalHead(rawValue: headRaw) ?? .bear
     }
 
-    static func `default`(name: String = "Pooh", kind: AnimalKind = .bear) -> BearCharacter {
+    static func `default`(kind: AnimalKind = .bear) -> BearCharacter {
         BearCharacter(
             id: UUID(),
-            name: name,
+            name: kind.label,
             kindRaw: kind.rawValue,
             headRaw: AnimalHead.bear.rawValue,
             bodyColorRaw: BearBodyColor.caramel.rawValue,
